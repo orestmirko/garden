@@ -1,0 +1,40 @@
+## This docker-compose file is only used for local development.
+version: '3.9'
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    ports:
+      - '${POSTGRES_PORT:-5433}:5432'
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER:-user}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-pass}'
+      POSTGRES_DB: '${POSTGRES_DATABASE:-base-auth}'
+    volumes:
+      - ./base-auth-api-db:/var/lib/postgresql/base-auth
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2.4
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    command: >
+      --requirepass '${REDIS_PASSWORD:-redispass}'
+    restart: unless-stopped
+
+  s3:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    ports:
+      - '7070:9000'
+      - '7071:9001'
+    volumes:
+      - ./base-auth-api-s3data:/usr/src/app/s3
+    environment:
+      MINIO_ROOT_USER: '${APP_AWS_ACCESS_KEY_ID:-admin}'
+      MINIO_ROOT_PASSWORD: '${APP_AWS_SECRET_ACCESS_KEY:-supersecret}'
+
+volumes:
+  base-auth-api-db:
+  base-auth-api-s3data:

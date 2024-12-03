@@ -1,0 +1,41 @@
+## Docker Compose file for the Base Auth API in stage
+version: '3.9'
+
+services:
+  api:
+    env_file:
+      - environments/stage.env
+    environment:
+      - ENVIRONMENT=stage
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    ports:
+      - '${POSTGRES_PORT:-5433}:5432'
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER:-user}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-pass}'
+      POSTGRES_DB: '${POSTGRES_DATABASE:-base-auth}'
+    volumes:
+      - ./base-auth-api-db:/var/lib/postgresql/base-auth
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2.4
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    command: >
+      --requirepass '${REDIS_PASSWORD:-redispass}'
+    restart: unless-stopped
+
+volumes:
+  base-auth-api-db:

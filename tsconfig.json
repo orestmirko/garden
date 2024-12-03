@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "module": "Node16",
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "strict": false,
+    "paths": {
+      "#modules/*": ["src/modules/*"],
+      "#common/*": ["src/common/*"],
+      "#config/*": ["src/config/*"],
+      "#entities/*": ["src/database/entities/*"],
+      "#transactions/*": ["src/database/transaction-manager-storage/*"],
+      "#database/*": ["src/database/*"],
+      "#src/*": ["src/*"],
+      "#test/*": ["test/*"]
+    },
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "allowJs": true,
+    "moduleResolution": "Node16"
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}
